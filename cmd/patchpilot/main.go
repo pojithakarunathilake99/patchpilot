@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/pojithakarunathilake99/patchpilot/internal/api"
 	"github.com/pojithakarunathilake99/patchpilot/internal/store"
 )
 
@@ -18,11 +19,7 @@ func main() {
 	}
 	defer db.Close()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
-	})
-
+	srv := api.New(db)
 	log.Println("listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(http.ListenAndServe(":8080", srv.Routes()))
 }
